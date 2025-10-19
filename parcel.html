@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excel Secure — Parcels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --accent: #ffcc00;
+      --accent-2: #e6b800;
+      --white: #eef2f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, #071026 0%, #081226 100%);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: linear-gradient(180deg, var(--card), #07101a);
+      padding: 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    nav {
+      margin-top: 12px;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      color: var(--white);
+      text-decoration: none;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    nav a.active,
+    nav a:hover {
+      background: rgba(255, 204, 0, 0.08);
+      color: var(--accent);
+    }
+
+    /* Main */
+    .main {
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--muted);
+    }
+
+    .search input {
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--white);
+      width: 260px;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--white);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Table */
+    .parcel-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.03);
+      color: #dbe7f3;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status.pending {
+      background: rgba(255, 204, 0, 0.14);
+      color: var(--accent);
+    }
+
+    .status.in-transit {
+      background: rgba(102, 126, 234, 0.12);
+      color: #9fb1ff;
+    }
+
+    .status.delivered {
+      background: rgba(34, 197, 94, 0.12);
+      color: #7ef3a0;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filters select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--white);
+      outline: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .search input {
+        width: 120px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">ES</div>
+        <div>
+          <h1>Excel Secure</h1>
+          <div class="muted">Admin Panel</div>
+        </div>
+      </div>
+        <!-- <a href="index.html">🏠 Dashboard</a> -->
+      <nav>
+        <a href="index.html" data-section="dashboard">🏠 Dashboard</a>
+        <a href="parcel.html" data-section="parcels" class="active">📦 Parcels</a>
+        <a href="user.html" data-section="users">👥 Users</a>
+        <a href="report.html" data-section="reports">📊 Reports</a>
+        <a href="settings.html" data-section="settings">⚙️ Settings</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="search"><input id="searchParcel" placeholder="Search parcels..." /></div>
+        <div class="flex">
+          <button class="btn" id="addParcel">+ Add Parcel</button>
+          <button class="secondary">Export</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <h2>Parcel Management</h2>
+        <select id="filterStatus">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="in-transit">In Transit</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+
+      <table class="parcel-table" id="parcelTable">
+        <thead>
+          <tr>
+            <th>Tracking ID</th>
+            <th>Sender</th>
+            <th>Receiver</th>
+            <th>Origin → Destination</th>
+            <th>Status</th>
+            <th>Last Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PLK10001252</td>
+            <td>Alice</td>
+            <td>John</td>
+            <td>Lagos → Abuja</td>
+            <td><span class="status in-transit">In Transit</span></td>
+            <td>2025-10-09</td>
+          </tr>
+          <tr>
+            <td>PLK10002864</td>
+            <td>Mary</td>
+            <td>James</td>
+            <td>New York → California</td>
+            <td><span class="status delivered">Delivered</span></td>
+            <td>2025-10-08</td>
+          </tr>
+          <tr>
+            <td>PLK10003653</td>
+            <td>Ola</td>
+            <td>Chidi</td>
+            <td>Abuja → Enugu</td>
+            <td><span class="status pending">Pending</span></td>
+            <td>2025-10-07</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    const parcels = [
+      { id: 'PLK10001252', sender: 'Alice', receiver: 'John', origin: 'Lagos', destination: 'Abuja', status: 'in-transit', lastUpdate: '2025-10-09' },
+      { id: 'PLK10002864', sender: 'Mary', receiver: 'James', origin: 'New York', destination: 'California', status: 'delivered', lastUpdate: '2025-10-08' },
+      { id: 'PLK10003653', sender: 'Ola', receiver: 'Chidi', origin: 'Abuja', destination: 'Enugu', status: 'pending', lastUpdate: '2025-10-07' },
+      { id: 'PLK10004567', sender: 'Emma', receiver: 'Olivia', origin: 'Texas', destination: 'Florida', status: 'in-transit', lastUpdate: '2025-10-06' },
+      { id: 'PLK10005678', sender: 'Liam', receiver: 'Noah', origin: 'California', destination: 'Nevada', status: 'delivered', lastUpdate: '2025-10-05' },
+      { id: 'PLK10006789', sender: 'Sophia', receiver: 'Isabella', origin: 'Miami', destination: 'Orlando', status: 'pending', lastUpdate: '2025-10-04' },
+      { id: 'PLK10007890', sender: 'James', receiver: 'William', origin: 'Chicago', destination: 'Houston', status: 'in-transit', lastUpdate: '2025-10-03' },
+      { id: 'PLK10008901', sender: 'Mia', receiver: 'Charlotte', origin: 'Seattle', destination: 'Portland', status: 'delivered', lastUpdate: '2025-10-02' },
+      { id: 'PLK10009012', sender: 'Benjamin', receiver: 'Elijah', origin: 'Boston', destination: 'New York', status: 'pending', lastUpdate: '2025-10-01' },  
+    ];
+    let filteredParcels = [...parcels];
+    const parcelTableBody = document.querySelector('#parcelTable tbody');
+    const searchInput = document.getElementById('searchParcel');
+    const filterStatus = document.getElementById('filterStatus');
+    const addParcelBtn = document.getElementById('addParcel');
+    const generateTrackingID = () => 'PLK' + Math.floor(10000000 + Math.random() * 90000000); 
+    const renderTable = () => {
+      parcelTableBody.innerHTML = '';
+      filteredParcels.forEach(parcel => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${parcel.id}</td>
+          <td>${parcel.sender}</td>
+          <td>${parcel.receiver}</td>
+          <td>${parcel.origin} → ${parcel.destination}</td>
+          <td><span class="status ${parcel.status}">${parcel.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span></td>
+          <td>${parcel.lastUpdate}</td>
+        `;
+        parcelTableBody.appendChild(row);
+      });
+    };
+    const filterParcels = () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const statusFilter = filterStatus.value;
+      filteredParcels = parcels.filter(parcel => {
+        const matchesSearch = parcel.id.toLowerCase().includes(searchTerm) ||
+                              parcel.sender.toLowerCase().includes(searchTerm) ||
+                              parcel.receiver.toLowerCase().includes(searchTerm) ||
+                              parcel.origin.toLowerCase().includes(searchTerm) ||
+                              parcel.destination.toLowerCase().includes(searchTerm);
+        const matchesStatus = statusFilter === 'all' || parcel.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+      renderTable();
+    };
+    searchInput.addEventListener('input', filterParcels);
+    filterStatus.addEventListener('change', filterParcels);
+    addParcelBtn.addEventListener('click', () => {
+      const newParcel = {
+        id: generateTrackingID(),
+        sender: 'New Sender',
+        receiver: 'New Receiver',
+        origin: 'Origin City',
+        destination: 'Destination City',
+        status: 'pending',
+        lastUpdate: new Date().toISOString().split('T')[0]
+      };
+      parcels.push(newParcel);
+      filterParcels();
+      alert(`New parcel added with Tracking ID: ${newParcel.id}`);
+    });
+    renderTable();
+  </script>
+</body>
+</html>

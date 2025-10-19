@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excel Secure — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --accent: #ffcc00;
+      --white: #eef2f7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(180deg, #071026 0%, #081226 100%);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: 100vh;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      background: linear-gradient(180deg, var(--card), #07101a);
+      padding: 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      color: var(--white);
+      text-decoration: none;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    nav a.active,
+    nav a:hover {
+      background: rgba(255, 204, 0, 0.08);
+      color: var(--accent);
+    }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--muted);
+    }
+
+    .search input {
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--white);
+      width: 260px;
+    }
+
+    /* ===== Main Content ===== */
+    .main {
+      padding: 24px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .settings-section {
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .settings-section h3 {
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    input,
+    select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #000;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      width: fit-content;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #e6b800;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">ES</div>
+        <div>
+          <h1>Excel Secure</h1>
+          <div style="color:var(--muted);font-size:13px">Admin Panel</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="index.html" data-section="dashboard">🏠 Dashboard</a>
+        <a href="parcel.html" data-section="parcels">📦 Parcels</a>
+        <a href="user.html" data-section="users">👥 Users</a>
+        <a href="report.html" data-section="reports">📊 Reports</a>
+        <a href="settings.html" data-section="settings" class="active">⚙️ Settings</a>
+      </nav>
+
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+      <div class="topbar">
+        <div class="search">
+          <input placeholder="Search settings..." />
+        </div>
+        <div style="color:var(--muted)">Signed in as <strong>admin</strong></div>
+      </div>
+
+      <!-- ===== Profile Settings ===== -->
+      <section class="settings-section">
+        <h3>Profile Settings</h3>
+        <form id="profileForm">
+          <label>Full Name</label>
+          <input type="text" id="name" value="Admin User" />
+
+          <label>Email</label>
+          <input type="email" id="email" value="admin@excelsecure.com" />
+
+          <button class="btn" type="button" onclick="saveProfile()">Save Changes</button>
+        </form>
+      </section>
+
+      <!-- ===== Password Settings ===== -->
+      <section class="settings-section">
+        <h3>Password Settings</h3>
+        <form id="passwordForm">
+          <label>Current Password</label>
+          <input type="password" id="currentPassword" />
+
+          <label>New Password</label>
+          <input type="password" id="newPassword" />
+
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmPassword" />
+
+          <button class="btn" type="button" onclick="updatePassword()">Update Password</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function saveProfile() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      alert(`Profile updated:\nName: ${name}\nEmail: ${email}`);
+    }
+
+    function updatePassword() {
+      const current = document.getElementById('currentPassword').value;
+      const newPass = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+
+      if (newPass !== confirm) {
+        alert("New passwords do not match!");
+        return;
+      }
+      alert("Password updated successfully!");
+    }
+
+    function savePreferences() {
+      const theme = document.getElementById('themeSelect').value;
+      const notify = document.getElementById('notificationsSelect').value;
+      alert(`Preferences saved!\nTheme: ${theme}\nNotifications: ${notify}`);
+    }
+  </script>
+</body>
+</html>

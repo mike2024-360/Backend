@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excel Secure — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --accent: #ffcc00;
+      --accent-2: #e6b800;
+      --white: #eef2f7
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, #071026 0%, #081226 100%);
+      color: var(--white);
+      min-height: 100vh
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: 100vh
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: linear-gradient(180deg, var(--card), #07101a);
+      padding: 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      margin: 0
+    }
+
+    nav {
+      margin-top: 12px
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      color: var(--white);
+      text-decoration: none;
+      margin-bottom: 6px;
+      opacity: .9
+    }
+
+    nav a.active,
+    nav a:hover {
+      background: rgba(255, 204, 0, 0.08);
+      color: var(--accent);
+    }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--muted)
+    }
+
+    .search input {
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--white);
+      width: 260px
+    }
+
+    /* DASHBOARD */
+    .main {
+      padding: 18px
+    }
+
+    .cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap
+    }
+
+    .card {
+      flex: 1;
+      min-width: 180px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .card p {
+      font-size: 20px;
+      margin: 6px 0 0;
+      font-weight: 700
+    }
+
+    /* CONTENT LAYOUT */
+    .row {
+      display: flex;
+      gap: 18px;
+      margin-top: 18px
+    }
+
+    .col {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .col.large {
+      flex: 2
+    }
+
+    .col.small {
+      flex: 1;
+      min-width: 260px
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--white)
+    }
+
+    thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    tbody td {
+      padding: 12px;
+      color: #dbe7f3;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.03)
+    }
+
+    .status {
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .status.pending {
+      background: rgba(255, 204, 0, 0.14);
+      color: var(--accent)
+    }
+
+    .status.in-transit {
+      background: rgba(102, 126, 234, 0.12);
+      color: #9fb1ff
+    }
+
+    .status.delivered {
+      background: rgba(34, 197, 94, 0.12);
+      color: #7ef3a0
+    }
+
+    .actions button {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--white);
+      padding: 6px 8px;
+      border-radius: 8px;
+      margin-right: 6px;
+      cursor: pointer
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 6, 23, 0.6);
+      z-index: 2000
+    }
+
+    .modal.open {
+      display: flex
+    }
+
+    .modal-card {
+      background: #081226;
+      padding: 18px;
+      border-radius: 10px;
+      width: 860px;
+      max-width: 96%;
+      border: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    /* small utilities */
+    .flex {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--white)
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .cards {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .card {
+      flex: 1 1 220px;
+      min-width: 220px;
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+
+    /* responsive */
+    @media (max-width:900px) {
+      .app {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .search input {
+        width: 120px
+      }
+
+      .cards {
+        flex-direction: column
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+      .cards {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .search input {
+        width: 100%;
+      }
+
+      .row {
+        flex-direction: column;
+      }
+
+      .col {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        font-size: 14px;
+      }
+
+      .card p {
+        font-size: 18px;
+      }
+
+      .topbar {
+        padding: 12px;
+      }
+
+      .topbar .flex {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .search input {
+        width: 100%;
+      }
+
+      /* ===== FULL RESPONSIVE FIX ===== */
+
+      /* 1️⃣ General layout adjustments */
+      .app {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 24px;
+        min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      /* 2️⃣ Make cards flexible */
+      .cards {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .card {
+        flex: 1 1 220px;
+        min-width: 220px;
+        max-width: 100%;
+      }
+
+      /* 3️⃣ Make tables scrollable */
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      /* 4️⃣ Handle mobile sidebar, topbar, and layout */
+      @media (max-width: 900px) {
+        .app {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+
+        .sidebar {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 240px;
+          height: 100%;
+          background: #0b1220;
+          z-index: 1000;
+          overflow-y: auto;
+        }
+
+        /* Optional mobile toggle button */
+        #menuToggle {
+          display: inline-block;
+          background: transparent;
+          color: var(--white);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          padding: 6px 10px;
+          cursor: pointer;
+        }
+
+        .topbar {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+          padding: 12px;
+        }
+
+        .search input {
+          width: 100%;
+        }
+
+        .cards {
+          flex-direction: column;
+        }
+
+        .row {
+          flex-direction: column;
+        }
+
+        .col {
+          width: 100%;
+        }
+
+        .modal-card {
+          width: 95%;
+          max-width: none;
+        }
+      }
+
+      /* 5️⃣ For very small screens */
+      @media (max-width: 600px) {
+        body {
+          font-size: 14px;
+        }
+
+        .topbar {
+          padding: 10px;
+        }
+
+        .card p {
+          font-size: 18px;
+        }
+
+        .muted {
+          font-size: 12px;
+        }
+      }
+
+
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">ES</div>
+        <div>
+          <h1>Excel Secure</h1>
+          <div class="muted">Admin Panel</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html" data-section="dashboard" class="active">🏠 Dashboard</a>
+        <a href="parcel.html" data-section="parcels">📦 Parcels</a>
+        <a href="user.html" data-section="users">👥 Users</a>
+        <a href="report.html" data-section="reports">📊 Reports</a>
+        <a href="settings.html" data-section="settings">⚙️ Settings</a>
+      </nav>
+
+
+    </aside>
+
+    <main class="main">
+      <div class="topbar"><button id="menuToggle">Menu</button>
+        <div class="flex">
+          <div class="search"><input id="globalSearch" placeholder="Search parcels or user..." /></div>
+        </div>
+        <div class="flex">
+          <div class="muted">Signed in as <strong>admin</strong></div>
+          <button class="secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="section">
+        <div class="cards" style="margin-top:12px">
+          <div class="card">
+            <h3>Total Parcels</h3>
+            <p id="statTotal">0</p>
+          </div>
+          <div class="card">
+            <h3>In Transit</h3>
+            <p id="statTransit">0</p>
+          </div>
+          <div class="card">
+            <h3>Delivered</h3>
+            <p id="statDelivered">0</p>
+          </div>
+          <div class="card">
+            <h3>Pending</h3>
+            <p id="statPending">0</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col large">
+            <h3 style="margin-top:0">Recent Parcels</h3>
+            <div class="table-container">
+              <table id="parcelsTable">
+                <thead>
+                  <tr>
+                    <th>Tracking ID</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Origin → Destination</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col small">
+            <h3 style="margin-top:0">Quick Actions</h3>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn" id="addParcelBtn">+ Add Parcel</button>
+              <button class="secondary" id="exportBtn">Export CSV</button>
+              <div style="margin-top:12px">
+                <h4 class="muted">Status distribution</h4>
+                <canvas id="statusChart" width="300" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARCELS (same content reused for simplicity) -->
+      <section id="parcels" class="section" style="display:none">
+        <!-- USERS -->
+        <section id="users" class="section" style="display:none">
+          <h2>Users</h2>
+          <p class="muted">User management coming soon.</p>
+        </section>
+
+        <!-- REPORTS -->
+        <section id="reports" class="section" style="display:none">
+          <h2>Reports</h2>
+          <p class="muted">Export summaries & analytics.</p>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settings" class="section" style="display:none">
+          <h2>Settings</h2>
+          <p class="muted">Company settings, notifications, integrations.</p>
+        </section>
+
+        <h2>All Parcels</h2>
+        <div class="table-container" style="margin-top:12px">
+          <table id="allParcelsTable">
+            <thead>
+              <tr>
+                <th>Tracking</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Route</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal for parcel details / edit -->
+  <div id="modal" class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 id="modalTitle">Parcel</h3>
+        <div><button class="secondary" id="closeModal">Close</button></div>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+
+
+  <!-- Dependencies and scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Sample data
+    let parcels = [
+      {
+        id: 'EX123456789US',
+        sender: 'Alice Johnson',
+        receiver: 'Bob Smith',
+        origin: 'New York, NY',
+        destination: 'Los Angeles, CA',
+        status: 'In Transit',
+        updated: '2024-10-01 14:30'
+      },
+      {
+        id: 'EX987654321US',
+        sender: 'Charlie Brown',
+        receiver: 'Daisy Miller',
+        origin: 'Chicago, IL',
+        destination: 'Houston, TX',
+        status: 'Delivered',
+        updated: '2024-09-28 09:15'
+      },
+      {
+        id: 'EX456789123US',
+        sender: 'Eve Davis',
+        receiver: 'Frank Wilson',
+        origin: 'Miami, FL',
+        destination: 'Seattle, WA',
+        status: 'Pending',
+        updated: '2024-10-02 11:00'
+      }
+    ];
+
+    // Elements
+    const stats = {
+      total: document.getElementById('statTotal'),
+      transit: document.getElementById('statTransit'),
+      delivered: document.getElementById('statDelivered'),
+      pending: document.getElementById('statPending')
+    };
+    const parcelsTableBody = document.querySelector('#parcelsTable tbody');
+    const allParcelsTableBody = document.querySelector('#allParcelsTable tbody');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeModalBtn = document.getElementById('closeModal');
+    const addParcelBtn = document.getElementById('addParcelBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const globalSearchInput = document.getElementById('globalSearch');
+    const menuToggleBtn = document.getElementById('menuToggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    // Chart
+    let statusChart;
+    function initChart() {
+      const ctx = document.getElementById('statusChart').getContext('2d');
+      statusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['In Transit', 'Delivered', 'Pending'],
+          datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: ['#667eea', '#22c55e', '#ffcc00']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#fff'
+              }
+            }
+          }
+        }
+      });
+    }
+    function updateChart() {
+      const counts = { 'In Transit': 0, 'Delivered': 0, 'Pending': 0 };
+      parcels.forEach(p => counts[p.status]++);
+      statusChart.data.datasets[0].data = [counts['In Transit'], counts['Delivered'], counts['Pending']];
+      statusChart.update();
+    }
+    // Render functions
+    function renderStats() {
+      stats.total.textContent = parcels.length;
+      stats.transit.textContent = parcels.filter(p => p.status === 'In Transit').length;
+      stats.delivered.textContent = parcels.filter(p => p.status === 'Delivered').length;
+      stats.pending.textContent = parcels.filter(p => p.status === 'Pending').length;
+    }
+    function createStatusBadge(status) {
+      const span = document.createElement('span');
+      span.className = `status ${status.toLowerCase().replace(' ', '-')}`;
+      span.textContent = status;
+      return span;
+    }  function createActionButtons(parcel) {
+      const div = document.createElement('div');
+      div.className = 'actions';
+      const viewBtn = document.createElement('button');
+      viewBtn.textContent = 'View';
+      viewBtn.onclick = () => openModal('view', parcel);
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+      editBtn.onclick = () => openModal('edit', parcel);
+      div.appendChild(viewBtn);
+      div.appendChild(editBtn);
+      return div;
+    }
+    function renderTable() {
+      parcelsTableBody.innerHTML = '';
+      allParcelsTableBody.innerHTML = '';
+      parcels.forEach(parcel => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${parcel.id}</td>
+          <td>${parcel.sender}</td>
+          <td>${parcel.receiver}</td>
+          <td>${parcel.origin} → ${parcel.destination}</td>
+          <td></td>
+          <td>${parcel.updated}</td>
+          <td></td>
+        `;
+        tr.children[4].appendChild(createStatusBadge(parcel.status));
+        tr.children[6].appendChild(createActionButtons(parcel));
+        parcelsTableBody.appendChild(tr);
+        allParcelsTableBody.appendChild(tr.cloneNode(true));
+      });
+    }
+    function refreshDashboard() {
+      renderStats();
+      renderTable();
+      updateChart();
+    }
+    // Modal functions
+    function openModal(mode, parcel = null) {
+      modalTitle.textContent = mode === 'view' ? 'Parcel Details' : (parcel ? 'Edit Parcel' : 'Add Parcel');
+      modalBody.innerHTML = '';
+      if (mode === 'view' && parcel) {
+        modalBody.innerHTML = `
+          <p><strong>Tracking ID:</strong> ${parcel.id}</p>
+          <p><strong>Sender:</strong> ${parcel.sender}</p>
+          <p><strong>Receiver:</strong> ${parcel.receiver}</p>
+          <p><strong>Origin:</strong> ${parcel.origin}</p>
+          <p><strong>Destination:</strong> ${parcel.destination}</p>
+          <p><strong>Status:</strong> ${parcel.status}</p>
+          <p><strong>Last Updated:</strong> ${parcel.updated}</p>
+        `;
+      } else {
+        const isEdit = mode === 'edit' && parcel;
+        modalBody.innerHTML = `
+          <form id="parcelForm">
+            <label>Tracking ID</label>
+            <input type="text" id="parcelId" value="${isEdit ? parcel.id : ''}" ${isEdit ? 'readonly' : ''} required />
+            <label>Sender</label>
+            <input type="text" id="parcelSender" value="${isEdit ? parcel.sender : ''}" required />
+            <label>Receiver</label>
+            <input type="text" id="parcelReceiver" value="${isEdit ? parcel.receiver : ''}" required />
+            <label>Origin</label>
+            <input type="text" id="parcelOrigin" value="${isEdit ? parcel.origin : ''}" required />
+            <label>Destination</label>
+            <input type="text" id="parcelDestination" value="${isEdit ? parcel.destination : ''}" required />
+            <label>Status</label>
+            <select id="parcelStatus" required>
+              <option value="In Transit" ${isEdit && parcel.status === 'In Transit' ? 'selected' : ''}>In Transit</option>
+              <option value="Delivered" ${isEdit && parcel.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="Pending" ${isEdit && parcel.status === 'Pending' ? 'selected' : ''}>Pending</option>
+            </select>
+            <button class="btn" type="submit">${isEdit ? 'Update' : 'Add'} Parcel</button>
+          </form> 
+        `;
+        document.getElementById('parcelForm').onsubmit = function (e) { 
+          e.preventDefault();
+          const newParcel = {
+            id: document.getElementById('parcelId').value,
+            sender: document.getElementById('parcelSender').value,
+            receiver: document.getElementById('parcelReceiver').value,
+            origin: document.getElementById('parcelOrigin').value,
+            destination: document.getElementById('parcelDestination').value,
+            status: document.getElementById('parcelStatus').value,
+            updated: new Date().toISOString().slice(0, 16).replace('T', ' ')
+          };
+          if (isEdit) {
+            const index = parcels.findIndex(p => p.id === parcel.id);
+            parcels[index] = newParcel;
+          } else {
+            parcels.push(newParcel);
+          }
+          closeModal();
+          refreshDashboard();
+        };  
+      }
+      modal.setAttribute('aria-hidden', 'false'); 
+      modal.classList.add('open');
+    }
+    function closeModal() {
+      modal.setAttribute('aria-hidden', 'true'); 
+      modal.classList.remove('open');
+    }
+    closeModalBtn.onclick = closeModal;
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+    addParcelBtn.onclick = () => openModal('add');
+    exportBtn.onclick = () => {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Tracking ID,Sender,Receiver,Origin,Destination,Status,Last Updated\n";
+      parcels.forEach(p => {
+        const row = [p.id, p.sender, p.receiver, p.origin, p.destination, p.status, p.updated].join(",");
+        csvContent += row + "\n";
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "parcels.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+    globalSearchInput.oninput = function () {
+      const query = this.value.toLowerCase();
+      const filterParcels = parcels.filter(p =>
+        p.id.toLowerCase().includes(query) ||
+        p.sender.toLowerCase().includes(query) ||
+        p.receiver.toLowerCase().includes(query)
+      );
+      parcelsTableBody.innerHTML = '';
+      filterParcels.forEach(parcel => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${parcel.id}</td>
+          <td>${parcel.sender}</td>
+          <td>${parcel.receiver}</td>
+          <td>${parcel.origin} → ${parcel.destination}</td>
+          <td></td>
+          <td>${parcel.updated}</td>
+          <td></td>
+        `;
+        tr.children[4].appendChild(createStatusBadge(parcel.status));
+        tr.children[6].appendChild(createActionButtons(parcel));
+        parcelsTableBody.appendChild(tr);
+      });
+    };
+    menuToggleBtn.onclick = function () {
+      if (sidebar.style.display === 'block') {
+        sidebar.style.display = 'none';
+      } else {
+        sidebar.style.display = 'block';
+      }
+    };
+    document.getElementById('logoutBtn').onclick = function () {
+      alert('Logging out...');
+    }; 
+    // Initial render
+    initChart();
+    refreshDashboard();
+  </script>
+</body>
+</html>

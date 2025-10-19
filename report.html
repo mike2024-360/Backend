@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excel Secure — Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --accent: #ffcc00;
+      --white: #eef2f7
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, #071026 0%, #081226 100%);
+      color: var(--white);
+      min-height: 100vh
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 24px;
+      min-height: 100vh
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--card), #07101a);
+      padding: 20px;
+      border-right: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: 700
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      margin: 0
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      color: var(--white);
+      text-decoration: none;
+      margin-bottom: 6px;
+      opacity: .9
+    }
+
+    nav a.active,
+    nav a:hover {
+      background: rgba(255, 204, 0, 0.08);
+      color: var(--accent)
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: var(--muted)
+    }
+
+    .search input {
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--white);
+      width: 260px
+    }
+
+    .main {
+      padding: 18px
+    }
+
+    h2 {
+      margin-top: 0
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px
+    }
+
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      color: var(--muted)
+    }
+
+    .card .value {
+      font-size: 20px;
+      font-weight: 700
+    }
+
+    canvas {
+      width: 100%;
+      max-height: 360px;
+      margin-top: 20px;
+      background: #0b1220;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04)
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px
+    }
+
+    thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03)
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.03)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">ES</div>
+        <div>
+          <h1>Excel Secure</h1>
+          <div style="color:var(--muted);font-size:13px">Admin Panel</div>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html" data-section="dashboard">🏠 Dashboard</a>
+        <a href="parcel.html" data-section="parcels">📦 Parcels</a>
+        <a href="user.html" data-section="users">👥 Users</a>
+        <a href="report.html" data-section="reports" class="active">📊 Reports</a>
+        <a href="settings.html" data-section="settings">⚙️ Settings</a>
+      </nav>
+
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="search"><input id="searchReport" placeholder="Search reports..." /></div>
+        <div class="flex">
+          <div style="color:var(--muted)">Signed in as <strong>admin</strong></div>
+          <button class="btn" id="exportBtn">Export CSV</button>
+        </div>
+      </div>
+
+      <section>
+        <h2>Reports Overview</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>Total Parcels</h3>
+            <div class="value" id="totalParcels">0</div>
+          </div>
+          <div class="card">
+            <h3>Delivered</h3>
+            <div class="value" id="deliveredCount">0</div>
+          </div>
+          <div class="card">
+            <h3>Pending</h3>
+            <div class="value" id="pendingCount">0</div>
+          </div>
+          <div class="card">
+            <h3>Revenue</h3>
+            <div class="value" id="revenueCount">$0</div>
+          </div>
+        </div>
+
+        <canvas id="parcelChart"></canvas>
+
+        <table id="reportTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Parcel ID</th>
+              <th>Status</th>
+              <th>Customer</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const reports = [
+      { date: '2025-10-01', id: 'PK1001', status: 'Delivered', customer: 'Jane Doe', amount: 5000 },
+      { date: '2025-10-02', id: 'PK1002', status: 'Pending', customer: 'John Smith', amount: 2500 },
+      { date: '2025-10-03', id: 'PK1003', status: 'Delivered', customer: 'Mary Johnson', amount: 7000 },
+      { date: '2025-10-04', id: 'PK1004', status: 'Delivered', customer: 'Chinedu Eze', amount: 4000 },
+      { date: '2025-10-05', id: 'PK1005', status: 'Pending', customer: 'Aisha Bello', amount: 3500 }
+    ];
+    const reportTableBody = document.querySelector('#reportTable tbody');
+    const totalParcelsEl = document.getElementById('totalParcels');
+    const deliveredCountEl = document.getElementById('deliveredCount');
+    const pendingCountEl = document.getElementById('pendingCount');
+    const revenueCountEl = document.getElementById('revenueCount');
+    const searchInput = document.getElementById('searchReport');
+    const exportBtn = document.getElementById('exportBtn');
+    let filteredReports = [...reports];
+    let parcelChart;
+    function renderReports() {
+      reportTableBody.innerHTML = filteredReports.map(r => `
+        <tr>
+          <td>${r.date}</td>
+          <td>${r.id}</td>
+          <td>${r.status}</td>
+          <td>${r.customer}</td>
+          <td>$${r.amount}</td>
+        </tr>
+      `).join('');
+      totalParcelsEl.textContent = reports.length;
+      deliveredCountEl.textContent = reports.filter(r => r.status === 'Delivered').length;
+      pendingCountEl.textContent = reports.filter(r => r.status === 'Pending').length;
+      revenueCountEl.textContent = '$' + reports.reduce((sum, r) => sum + r.amount, 0);
+    }
+    function filterReports() {
+      const query = searchInput.value.toLowerCase();
+      filteredReports = reports.filter(r =>
+        r.date.includes(query) ||
+        r.id.toLowerCase().includes(query) ||
+        r.status.toLowerCase().includes(query) ||
+        r.customer.toLowerCase().includes(query) ||
+        r.amount.toString().includes(query)
+      );
+      renderReports();
+    }
+    function exportCSV() {
+      const headers = ['Date', 'Parcel ID', 'Status', 'Customer', 'Amount'];
+      const rows = filteredReports.map(r => [r.date, r.id, r.status, r.customer, r.amount]);
+      let csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "reports.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    function renderChart() {
+      const ctx = document.getElementById('parcelChart').getContext('2d');
+      const dates = [...new Set(reports.map(r => r.date))];
+      const deliveredCounts = dates.map(date => reports.filter(r => r.date === date && r.status === 'Delivered').length);
+      const pendingCounts = dates.map(date => reports.filter(r => r.date === date && r.status === 'Pending').length);
+      if (parcelChart) parcelChart.destroy();
+      parcelChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [
+            {
+              label: 'Delivered',
+              data: deliveredCounts,
+              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'Pending',
+              data: pendingCounts,
+              borderColor: 'rgba(255, 206, 86, 1)',
+              backgroundColor: 'rgba(255, 206, 86, 0.2)',
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: '#fff' } }
+          },
+          scales: {
+            x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+            y: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.1)' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+    searchInput.addEventListener('input', filterReports);
+    exportBtn.addEventListener('click', exportCSV);
+    renderReports();
+    renderChart();
+  </script>
+</body>
+</html>
